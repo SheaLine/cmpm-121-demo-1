@@ -42,7 +42,7 @@ function animate(time: number) {
   const elapsed = time - lastTime;
   lastTime = time;
 
-  num_clicks += elapsed / 1000 * growth_rate;
+  num_clicks += (elapsed / 1000) * growth_rate;
   counter.innerHTML = `${num_clicks} Santas`;
   upgradeButton.disabled = num_clicks < 10;
 
