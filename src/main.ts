@@ -21,11 +21,43 @@ interface Item {
 }
 
 const availableItems: Item[] = [
-  { name: "Elf", cost: 10, rate: 0.1, count: 0, description: "Elves are the backbone of Santa's Workshop." },
-  { name: "Reindeer", cost: 100, rate: 2.0, count: 0, description: "Reindeer are the fastest way to deliver gifts." },
-  { name: "Sleigh", cost: 1000, rate: 50, count: 0, description: "A sleigh can carry a lot of gifts." },
-  {name: "Candy Cane Conveyor", cost: 10000, rate: 1500, count: 0, description: "Santa installs a candy cane-themed conveyor belt system to speed up packaging"},
-  {name: "Christmas Every Day", cost: 100000, rate: 5000, count: 0, description: "Santa uses his magic to make every day Christmas making the demand for gifts skyrocket"},
+  {
+    name: "Elf",
+    cost: 10,
+    rate: 0.1,
+    count: 0,
+    description: "Elves are the backbone of Santa's Workshop.",
+  },
+  {
+    name: "Reindeer",
+    cost: 100,
+    rate: 2.0,
+    count: 0,
+    description: "Reindeer are the fastest way to deliver gifts.",
+  },
+  {
+    name: "Sleigh",
+    cost: 1000,
+    rate: 50,
+    count: 0,
+    description: "A sleigh can carry a lot of gifts.",
+  },
+  {
+    name: "Candy Cane Conveyor",
+    cost: 10000,
+    rate: 1500,
+    count: 0,
+    description:
+      "Santa installs a candy cane-themed conveyor belt system to speed up packaging",
+  },
+  {
+    name: "Christmas Every Day",
+    cost: 100000,
+    rate: 5000,
+    count: 0,
+    description:
+      "Santa uses his magic to make every day Christmas making the demand for gifts skyrocket",
+  },
 ];
 
 const button = document.createElement("button");
