@@ -24,9 +24,16 @@ const counter = document.createElement("div");
 counter.innerHTML = `${num_clicks} Santas`;
 app.append(counter);
 
-// Step 3
-const delay = 1000;
-setInterval(() => {
-  num_clicks++;
-  counter.innerHTML = `${num_clicks} Santas`;
-}, delay);
+// Step 4
+let lastTime: number = performance.now();
+function animate(time: number) {
+    const elapsed = time - lastTime;
+    lastTime = time;
+  
+    num_clicks += elapsed / 1000;
+    counter.innerHTML = `${num_clicks} Santas`;
+  
+    requestAnimationFrame(animate);
+  }
+  
+  requestAnimationFrame(animate);
