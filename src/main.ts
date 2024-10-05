@@ -12,7 +12,14 @@ app.append(header);
 let num_clicks: number = 0;
 let growth_rate: number = 0;
 
-const upgrades = [
+interface Item {
+    name: string;
+    cost: number;
+    rate: number;
+    count: number;
+    };
+
+const availableItems  : Item[] = [
   { name: "Elf", cost: 10, rate: 0.1, count: 0 },
   { name: "Reindeer", cost: 100, rate: 2.0, count: 0 },
   { name: "Sleigh", cost: 1000, rate: 50, count: 0 },
@@ -34,7 +41,7 @@ const counter = document.createElement("div");
 updateCounter();
 app.append(counter);
 
-const upgradeButtons = upgrades.map((upgrade) => {
+const upgradeButtons = availableItems .map((upgrade) => {
   const upgradeButton = document.createElement("button");
   upgradeButton.innerHTML = `Buy ${upgrade.name} (${upgrade.cost} Santas)`;
   upgradeButton.disabled = true;
@@ -60,13 +67,13 @@ function updateCounter() {
 function updateGrowthRateDisplay() {
   growthRateDisplay.innerHTML =
     `Growth Rate: ${growth_rate.toFixed(2)} Santas/sec<br>` +
-    upgrades.map((upgrade) => `${upgrade.name}: ${upgrade.count}`).join("<br>");
+    availableItems .map((upgrade) => `${upgrade.name}: ${upgrade.count}`).join("<br>");
 }
 
 function updateUpgradeButtons() {
   upgradeButtons.forEach((button, index) => {
-    button.disabled = num_clicks < upgrades[index].cost;
-    button.innerHTML = `Buy ${upgrades[index].name} (${upgrades[index].cost.toFixed(2)} Santas)`;
+    button.disabled = num_clicks < availableItems [index].cost;
+    button.innerHTML = `Buy ${availableItems [index].name} (${availableItems [index].cost.toFixed(2)} Santas)`;
   });
 }
 
