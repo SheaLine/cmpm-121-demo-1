@@ -22,18 +22,16 @@ const button = document.createElement("button");
 button.innerHTML = "🎅";
 button.onclick = () => {
   num_clicks++;
-  counter.innerHTML = `${num_clicks} Santas`;
+  updateCounter();
 };
 app.append(button);
 
 const growthRateDisplay = document.createElement("div");
-growthRateDisplay.innerHTML =
-  `Growth Rate: ${growth_rate.toFixed(2)} Santas/sec<br>` +
-  upgrades.map((upgrade) => `${upgrade.name}: ${upgrade.count}`).join("<br>");
+updateGrowthRateDisplay();
 app.append(growthRateDisplay);
 
 const counter = document.createElement("div");
-counter.innerHTML = `${num_clicks} Santas`;
+updateCounter();
 app.append(counter);
 
 const upgradeButtons = upgrades.map((upgrade) => {
@@ -45,20 +43,31 @@ const upgradeButtons = upgrades.map((upgrade) => {
       num_clicks -= upgrade.cost;
       growth_rate += upgrade.rate;
       upgrade.count++;
-      counter.innerHTML = `${num_clicks.toFixed(2)} Santas`;
-      growthRateDisplay.innerHTML =
-        `Growth Rate: ${growth_rate.toFixed(2)} Santas/sec<br>` +
-        upgrades
-          .map((upgrade) => `${upgrade.name}: ${upgrade.count}`)
-          .join("<br>");
-      upgradeButtons.forEach((button, index) => {
-        button.disabled = num_clicks < upgrades[index].cost;
-      });
+      upgrade.cost *= 1.15;
+      updateCounter();
+      updateGrowthRateDisplay();
+      updateUpgradeButtons();
     }
   };
   app.append(upgradeButton);
   return upgradeButton;
 });
+
+function updateCounter() {
+    counter.innerHTML = `${num_clicks.toFixed(2)} Santas`;
+  }
+  
+  function updateGrowthRateDisplay() {
+    growthRateDisplay.innerHTML = `Growth Rate: ${growth_rate.toFixed(2)} Santas/sec<br>` +
+      upgrades.map(upgrade => `${upgrade.name}: ${upgrade.count}`).join("<br>");
+  }
+  
+  function updateUpgradeButtons() {
+    upgradeButtons.forEach((button, index) => {
+      button.disabled = num_clicks < upgrades[index].cost;
+      button.innerHTML = `Buy ${upgrades[index].name} (${upgrades[index].cost.toFixed(2)} Santas)`;
+    });
+  }
 
 let lastTime: number = performance.now();
 function animate(time: number) {
@@ -66,10 +75,8 @@ function animate(time: number) {
   lastTime = time;
 
   num_clicks += (elapsed / 1000) * growth_rate;
-  counter.innerHTML = `${num_clicks} Santas`;
-  upgradeButtons.forEach((button, index) => {
-    button.disabled = num_clicks < upgrades[index].cost;
-  });
+    updateCounter();
+    updateUpgradeButtons();
 
   requestAnimationFrame(animate);
 }
