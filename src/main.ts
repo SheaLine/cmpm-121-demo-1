@@ -60,61 +60,101 @@ const availableItems: Item[] = [
   },
 ];
 
+interface Observer {
+  update(): void;
+}
+
+class Subject {
+  private observers: Observer[] = [];
+
+  addObserver(observer: Observer) {
+    this.observers.push(observer);
+  }
+
+  removeObserver(observer: Observer) {
+    this.observers = this.observers.filter((obs) => obs !== observer);
+  }
+
+  notifyObservers() {
+    this.observers.forEach((observer) => observer.update());
+  }
+}
+
+const subject = new Subject();
+
+class CounterDisplay implements Observer {
+  private element: HTMLDivElement;
+
+  constructor() {
+    this.element = document.createElement("div");
+    app.append(this.element);
+    subject.addObserver(this);
+  }
+
+  update() {
+    this.element.innerHTML = `${num_clicks.toFixed(2)} Gifts`;
+  }
+}
+
+class GrowthRateDisplay implements Observer {
+  private element: HTMLDivElement;
+
+  constructor() {
+    this.element = document.createElement("div");
+    app.append(this.element);
+    subject.addObserver(this);
+  }
+
+  update() {
+    this.element.innerHTML =
+      `Growth Rate: ${growth_rate.toFixed(2)} Gifts/sec<br>` +
+      availableItems
+        .map((upgrade) => `${upgrade.name}: ${upgrade.count}`)
+        .join("<br>");
+  }
+}
+
+class UpgradeButton implements Observer {
+  private button: HTMLButtonElement;
+  private upgrade: Item;
+  private cost_multiplier: number = 1.15;
+
+  constructor(upgrade: Item) {
+    this.upgrade = upgrade;
+    this.button = document.createElement("button");
+    this.button.innerHTML = `Buy ${upgrade.name} (${upgrade.cost} Gifts)`;
+    this.button.disabled = true;
+    this.button.title = upgrade.description;
+    this.button.onclick = () => {
+      if (num_clicks >= upgrade.cost) {
+        num_clicks -= upgrade.cost;
+        growth_rate += upgrade.rate;
+        upgrade.count++;
+        upgrade.cost *= this.cost_multiplier;
+        subject.notifyObservers();
+      }
+    };
+    app.append(this.button);
+    subject.addObserver(this);
+  }
+
+  update() {
+    this.button.disabled = num_clicks < this.upgrade.cost;
+    this.button.innerHTML = `Buy ${this.upgrade.name} (${this.upgrade.cost.toFixed(2)} Gifts)`;
+  }
+}
+
+new CounterDisplay();
+new GrowthRateDisplay();
+availableItems.map((item) => new UpgradeButton(item));
+
 const button = document.createElement("button");
 button.innerHTML = "🎁";
 button.onclick = () => {
   num_clicks++;
-  updateCounter();
+  subject.notifyObservers();
 };
 app.append(button);
-
-const growthRateDisplay = document.createElement("div");
-updateGrowthRateDisplay();
-app.append(growthRateDisplay);
-
-const counter = document.createElement("div");
-updateCounter();
-app.append(counter);
-
-const upgradeButtons = availableItems.map((upgrade) => {
-  const cost_multiplier: number = 1.15;
-  const upgradeButton = document.createElement("button");
-  upgradeButton.innerHTML = `Buy ${upgrade.name} (${upgrade.cost} Gifts)`;
-  upgradeButton.disabled = true;
-  upgradeButton.title = upgrade.description;
-  upgradeButton.onclick = () => {
-    if (num_clicks >= upgrade.cost) {
-      num_clicks -= upgrade.cost;
-      growth_rate += upgrade.rate;
-      upgrade.count++;
-      upgrade.cost *= cost_multiplier;
-      updateCounter();
-      updateGrowthRateDisplay();
-      updateUpgradeButtons();
-    }
-  };
-  app.append(upgradeButton);
-  return upgradeButton;
-});
-
-function updateCounter() {
-  counter.innerHTML = `${num_clicks.toFixed(2)} Gifts`;
-}
-
-function updateGrowthRateDisplay() {
-  growthRateDisplay.innerHTML =
-    `Growth Rate: ${growth_rate.toFixed(2)} Gifts/sec<br>` +
-    availableItems
-      .map((upgrade) => `${upgrade.name}: ${upgrade.count}`)
-      .join("<br>");
-}
-
-function updateUpgradeButtons() {
-  upgradeButtons.forEach((button, index) => {
-    button.disabled = num_clicks < availableItems[index].cost;
-    button.innerHTML = `Buy ${availableItems[index].name} (${availableItems[index].cost.toFixed(2)} Gifts)`;
-  });
-}
 
 let lastTime: number = performance.now();
 function animate(time: number) {
@@ -122,8 +162,7 @@ function animate(time: number) {
   lastTime = time;
 
   num_clicks += (elapsed / 1000) * growth_rate;
-  updateCounter();
-  updateUpgradeButtons();
+  subject.notifyObservers();
 
   requestAnimationFrame(animate);
 }
