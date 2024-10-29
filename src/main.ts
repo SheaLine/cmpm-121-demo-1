@@ -77,6 +77,7 @@ updateCounter();
 app.append(counter);
 
 const upgradeButtons = availableItems.map((upgrade) => {
+  const cost_multiplier: number = 1.15;
   const upgradeButton = document.createElement("button");
   upgradeButton.innerHTML = `Buy ${upgrade.name} (${upgrade.cost} Gifts)`;
   upgradeButton.disabled = true;
@@ -86,7 +87,7 @@ const upgradeButtons = availableItems.map((upgrade) => {
       num_clicks -= upgrade.cost;
       growth_rate += upgrade.rate;
       upgrade.count++;
-      upgrade.cost *= 1.15;
+      upgrade.cost *= cost_multiplier;
       updateCounter();
       updateGrowthRateDisplay();
       updateUpgradeButtons();
