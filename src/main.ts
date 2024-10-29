@@ -9,8 +9,30 @@ const header = document.createElement("h1");
 header.innerHTML = gameName;
 app.append(header);
 
-let num_clicks: number = 0;
-let growth_rate: number = 0;
+class GameState {
+  private _numClicks: number = 0;
+  private _growthRate: number = 0;
+
+  get numClicks(): number {
+    return this._numClicks;
+  }
+
+  set numClicks(value: number) {
+    this._numClicks = value;
+    subject.notifyObservers();
+  }
+
+  get growthRate(): number {
+    return this._growthRate;
+  }
+
+  set growthRate(value: number) {
+    this._growthRate = value;
+    subject.notifyObservers();
+  }
+}
+
+const gameState = new GameState();
 
 interface Item {
   name: string;
@@ -92,7 +114,7 @@ class CounterDisplay implements Observer {
   }
 
   update() {
-    this.element.innerHTML = `${num_clicks.toFixed(2)} Gifts`;
+    this.element.innerHTML = `${gameState.numClicks.toFixed(2)} Gifts`;
   }
 }
 
@@ -107,7 +129,7 @@ class GrowthRateDisplay implements Observer {
 
   update() {
     this.element.innerHTML =
-      `Growth Rate: ${growth_rate.toFixed(2)} Gifts/sec<br>` +
+      `Growth Rate: ${gameState.growthRate.toFixed(2)} Gifts/sec<br>` +
       availableItems
         .map((upgrade) => `${upgrade.name}: ${upgrade.count}`)
         .join("<br>");
@@ -126,9 +148,9 @@ class UpgradeButton implements Observer {
     this.button.disabled = true;
     this.button.title = upgrade.description;
     this.button.onclick = () => {
-      if (num_clicks >= upgrade.cost) {
-        num_clicks -= upgrade.cost;
-        growth_rate += upgrade.rate;
+      if (gameState.numClicks >= upgrade.cost) {
+        gameState.numClicks -= upgrade.cost;
+        gameState.growthRate += upgrade.rate;
         upgrade.count++;
         upgrade.cost *= this.cost_multiplier;
         subject.notifyObservers();
@@ -139,7 +161,7 @@ class UpgradeButton implements Observer {
   }
 
   update() {
-    this.button.disabled = num_clicks < this.upgrade.cost;
+    this.button.disabled = gameState.numClicks < this.upgrade.cost;
     this.button.innerHTML = `Buy ${this.upgrade.name} (${this.upgrade.cost.toFixed(2)} Gifts)`;
   }
 }
@@ -151,7 +173,7 @@ availableItems.map((item) => new UpgradeButton(item));
 const button = document.createElement("button");
 button.innerHTML = "🎁";
 button.onclick = () => {
-  num_clicks++;
+  gameState.numClicks++;
   subject.notifyObservers();
 };
 app.append(button);
@@ -161,7 +183,7 @@ function animate(time: number) {
   const elapsed = time - lastTime;
   lastTime = time;
 
-  num_clicks += (elapsed / 1000) * growth_rate;
+  gameState.numClicks += (elapsed / 1000) * gameState.growthRate;
   subject.notifyObservers();
 
   requestAnimationFrame(animate);
