@@ -5,6 +5,10 @@ const app: HTMLDivElement = document.querySelector("#app")!;
 const gameName = "Santa's Workshop";
 document.title = gameName;
 
+// idea for containers with stats, buttons, and upgrades came from:
+// https://github.com/ykijel/cmpm-121-demo-1/blob/main/src/main.ts
+// https://github.com/NickCorfmat/cmpm-121-demo-1/blob/main/src/main.ts
+
 const StatsContainer = document.createElement("div");
 StatsContainer.classList.add("stats-container");
 app.append(StatsContainer);

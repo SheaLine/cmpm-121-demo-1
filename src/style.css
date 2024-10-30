@@ -107,6 +107,7 @@ button:hover {
 }
 
 /* Pulse animation */
+/* My idea for a more interactive button came from this peer: https://collectioncard.github.io/Turtle-Tapper/ */
 @keyframes pulse {
   0% {
     transform: scale(1); /* Initial size */
