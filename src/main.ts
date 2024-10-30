@@ -5,9 +5,29 @@ const app: HTMLDivElement = document.querySelector("#app")!;
 const gameName = "Santa's Workshop";
 document.title = gameName;
 
+const StatsContainer = document.createElement("div");
+StatsContainer.classList.add("stats-container");
+app.append(StatsContainer);
+
+const ButtonContainer = document.createElement("div");
+ButtonContainer.classList.add("button-container");
+app.append(ButtonContainer);
+
+const UpgradesContainer = document.createElement("div");
+UpgradesContainer.classList.add("upgrades-container");
+app.append(UpgradesContainer);
+
+const statsHeader = document.createElement("h1");
+statsHeader.innerHTML = "Stats";
+StatsContainer.append(statsHeader);
+
 const header = document.createElement("h1");
 header.innerHTML = gameName;
-app.append(header);
+ButtonContainer.append(header);
+
+const upgradesHeader = document.createElement("h1");
+upgradesHeader.innerHTML = "Upgrades";
+UpgradesContainer.append(upgradesHeader);
 
 class GameState {
   private _numClicks: number = 0;
@@ -109,7 +129,7 @@ class CounterDisplay implements Observer {
 
   constructor() {
     this.element = document.createElement("div");
-    app.append(this.element);
+    ButtonContainer.append(this.element);
     subject.addObserver(this);
   }
 
@@ -123,18 +143,26 @@ class GrowthRateDisplay implements Observer {
 
   constructor() {
     this.element = document.createElement("div");
-    app.append(this.element);
+    StatsContainer.append(this.element);
     subject.addObserver(this);
   }
 
   update() {
     this.element.innerHTML =
-      `Growth Rate: ${gameState.growthRate.toFixed(2)} Gifts/sec<br>` +
+      `Growth Rate:<br>${gameState.growthRate.toFixed(2)} Gifts/sec<br><br>` +
       availableItems
         .map((upgrade) => `${upgrade.name}: ${upgrade.count}`)
         .join("<br>");
   }
 }
+
+const button = document.createElement("button");
+button.innerHTML = "🎁";
+button.onclick = () => {
+  gameState.numClicks++;
+  subject.notifyObservers();
+};
+ButtonContainer.append(button);
 
 class UpgradeButton implements Observer {
   private button: HTMLButtonElement;
@@ -156,7 +184,7 @@ class UpgradeButton implements Observer {
         subject.notifyObservers();
       }
     };
-    app.append(this.button);
+    UpgradesContainer.append(this.button);
     subject.addObserver(this);
   }
 
@@ -169,14 +197,6 @@ class UpgradeButton implements Observer {
 new CounterDisplay();
 new GrowthRateDisplay();
 availableItems.map((item) => new UpgradeButton(item));
-
-const button = document.createElement("button");
-button.innerHTML = "🎁";
-button.onclick = () => {
-  gameState.numClicks++;
-  subject.notifyObservers();
-};
-app.append(button);
 
 let lastTime: number = performance.now();
 function animate(time: number) {

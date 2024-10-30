@@ -25,8 +25,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -37,10 +35,45 @@ h1 {
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  background-color: #bc4749;
+}
+
+.stats-container h1,
+.button-container h1,
+.upgrades-container h1 {
+  line-height: 5.1em; 
+  color: #f2e8cf;
+}
+.stats-container {
+  flex: 1;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #6a994e;
+}
+
+.button-container {
+  flex: 2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.upgrades-container {
+  flex: 3;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #6a994e;
 }
 
 button {
@@ -50,27 +83,40 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+
+.button-container button {
+  background-color: #386641;
+  border-radius: 20px;
+  font-size: 5em;
+  margin-bottom: 10px;
+}
+.button-container button:hover{
+  animation: pulse 0.6s infinite; /* 0.6s duration, infinite repetition */
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+
+.upgrades-container button{
+  background-color: #da2c38;
+  width: 50%;
+  margin-bottom: 10px;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+  0% {
+    transform: scale(1); /* Initial size */
   }
-  a:hover {
-    color: #747bff;
+  50% {
+    transform: scale(1.1); /* Grow to 110% */
   }
-  button {
-    background-color: #f9f9f9;
+  100% {
+    transform: scale(1); /* Return to original size */
   }
 }
+
