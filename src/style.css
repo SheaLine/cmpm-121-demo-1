@@ -44,7 +44,7 @@ h1 {
 .stats-container h1,
 .button-container h1,
 .upgrades-container h1 {
-  line-height: 5.1em; 
+  line-height: 5.1em;
   color: #f2e8cf;
 }
 .stats-container {
@@ -96,12 +96,11 @@ button:hover {
   font-size: 5em;
   margin-bottom: 10px;
 }
-.button-container button:hover{
+.button-container button:hover {
   animation: pulse 0.6s infinite; /* 0.6s duration, infinite repetition */
 }
 
-
-.upgrades-container button{
+.upgrades-container button {
   background-color: #da2c38;
   width: 50%;
   margin-bottom: 10px;
@@ -119,4 +118,3 @@ button:hover {
     transform: scale(1); /* Return to original size */
   }
 }
-
